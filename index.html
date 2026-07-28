@@ -105,6 +105,13 @@
 [data-theme="ocean-blue"]    { --bg:#061520; --surface:#0D2331; --primary:#2E9BC4; --accent:#7FD9D4; --text:#E4F3F7; }
 [data-theme="emerald-green"] { --bg:#08160F; --surface:#0F2419; --primary:#2E9C6B; --accent:#C9A66B; --text:#E5F5EC; }
 
+/* ============== ANIMATED COLLECTION (living backgrounds) ============== */
+[data-theme="falling-stars"] { --bg:#050812; --surface:#0D1224; --primary:#8FB3FF; --accent:#F2C879; --text:#E8ECFB; }
+[data-theme="shining-moon"]  { --bg:#040613; --surface:#0B0F22; --primary:#DCE6FF; --accent:#9FB6E8; --text:#EEF1FB; }
+[data-theme="windy-meadow"]  { --bg:#1B1030; --surface:#2A1B3D; --primary:#E0895A; --accent:#7BB06A; --text:#F5EAE0; }
+[data-theme="firefly-forest"]{ --bg:#050C08; --surface:#0D1810; --primary:#8FD16B; --accent:#D7FF8A; --text:#E7F5E4; }
+[data-theme="ocean-waves"]   { --bg:#031019; --surface:#082234; --primary:#3FA9C4; --accent:#8FE3D8; --text:#E4F6F7; }
+
 /* ============== SECRET THEMES (unlocked via passphrase) ============== */
 [data-theme="eternal-night"]    { --bg:#020103; --surface:#0A0710; --primary:#6E1F6E; --accent:#C9A66B; --text:#E9E2F0; --shadow:0 0 80px rgba(110,31,110,.35); }
 [data-theme="queen-of-hearts"]  { --bg:#0C0206; --surface:#1A0510; --primary:#D6003E; --accent:#161616; --text:#F5E6EC; --shadow:0 0 70px rgba(214,0,62,.30); }
@@ -418,6 +425,89 @@ a:focus-visible, button:focus-visible {
 .theme-swatch .preview { height: 44px; border-radius: 8px; margin-bottom: 10px; }
 .theme-swatch .tname { font-size: 12.5px; font-weight: 700; }
 
+/* ---------------- Animated theme FX layer ---------------- */
+.theme-fx { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+
+.fx-shoot {
+  position: absolute; top: -5%; left: var(--x, 10%);
+  width: 2px; height: 2px; border-radius: 50%;
+  background: #fff; box-shadow: 0 0 8px 2px rgba(255,255,255,.9);
+  animation: fxShoot 3.4s linear infinite;
+  animation-delay: var(--d, 0s);
+}
+.fx-shoot::before {
+  content: ""; position: absolute; top: 0; left: 0; width: 90px; height: 1px;
+  background: linear-gradient(90deg, rgba(255,255,255,.9), transparent);
+  transform-origin: left center; transform: rotate(215deg);
+}
+@keyframes fxShoot {
+  0% { transform: translate(0,0); opacity: 0; }
+  4% { opacity: 1; }
+  38% { transform: translate(-62vw, 62vh); opacity: 0; }
+  100% { transform: translate(-62vw, 62vh); opacity: 0; }
+}
+
+.fx-star {
+  position: absolute; width: 2px; height: 2px; border-radius: 50%;
+  background: #fff; opacity: .3;
+  animation: fxTwinkle 2.6s ease-in-out infinite;
+}
+@keyframes fxTwinkle { 0%,100% { opacity:.2; transform:scale(.8);} 50% { opacity:1; transform:scale(1.3);} }
+
+.fx-moon {
+  position: absolute; top: 9%; right: 11%; width: 120px; height: 120px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffffff, #dfe6f5 60%, #b9c6e0 100%);
+  box-shadow: 0 0 60px 20px rgba(255,255,255,.35);
+  animation: fxMoonGlow 6s ease-in-out infinite;
+}
+@keyframes fxMoonGlow {
+  0%,100% { box-shadow: 0 0 60px 20px rgba(255,255,255,.30); }
+  50% { box-shadow: 0 0 95px 36px rgba(255,255,255,.55); }
+}
+
+.fx-grass-wrap { position: absolute; bottom: 0; left: 0; right: 0; height: 74px; display: flex; align-items: flex-end; overflow: hidden; }
+.fx-blade {
+  width: 6px; margin-right: 2px; border-radius: 5px 5px 0 0;
+  background: linear-gradient(180deg, #7fa860, #3c5a2c);
+  transform-origin: bottom center;
+  animation: fxSway 2.6s ease-in-out infinite;
+}
+@keyframes fxSway { 0%,100% { transform: rotate(-7deg); } 50% { transform: rotate(7deg); } }
+
+.fx-petal {
+  position: absolute; top: -5%; width: 8px; height: 8px; border-radius: 50% 0 50% 50%;
+  background: #f2b6c6; opacity: 0;
+  animation: fxDrift 8s linear infinite;
+}
+@keyframes fxDrift {
+  0% { transform: translate(0,0) rotate(0deg); opacity: 0; }
+  10% { opacity: .85; }
+  100% { transform: translate(40px, 120vh) rotate(360deg); opacity: 0; }
+}
+
+.fx-firefly {
+  position: absolute; width: 5px; height: 5px; border-radius: 50%;
+  background: #d7ff8a; box-shadow: 0 0 8px 3px rgba(215,255,138,.8);
+  animation: fxFly 9s ease-in-out infinite;
+}
+@keyframes fxFly {
+  0% { transform: translate(0,0); opacity: .3; }
+  20% { transform: translate(30px,-22px); opacity: 1; }
+  40% { transform: translate(-22px,-42px); opacity: .6; }
+  60% { transform: translate(26px,-8px); opacity: 1; }
+  80% { transform: translate(-16px,20px); opacity: .4; }
+  100% { transform: translate(0,0); opacity: .3; }
+}
+
+.fx-wave {
+  position: absolute; bottom: -6px; left: -50%; width: 200%; height: 90px;
+  background: repeating-linear-gradient(90deg, rgba(255,255,255,.10) 0 40px, transparent 40px 80px);
+  border-radius: 50% 50% 0 0 / 70% 70% 0 0;
+  animation: fxWave 9s linear infinite;
+}
+.fx-wave.two { bottom: -16px; opacity: .55; animation-duration: 12s; animation-direction: reverse; }
+@keyframes fxWave { from { transform: translateX(0); } to { transform: translateX(-25%); } }
+
 /* ---------------- Responsive ---------------- */
 @media (max-width: 900px) {
   .sidebar { position: fixed; z-index: 50; left: 0; top: 0; transform: translateX(-100%); box-shadow: var(--shadow); }
@@ -462,17 +552,6 @@ a:focus-visible, button:focus-visible {
 .auth-card h1 { font-size: 26px; margin-bottom: 6px; }
 .auth-card p.sub { margin-bottom: 26px; font-size: 13.5px; }
 
-.who-select {
-  display: flex; gap: 10px; margin-bottom: 18px;
-}
-.who-btn {
-  flex: 1; padding: 12px; border-radius: var(--radius-sm);
-  border: 1px solid var(--border); background: var(--surface-2);
-  color: var(--text-muted); font-weight: 700; font-size: 13.5px; cursor: pointer;
-  transition: all var(--dur) var(--ease);
-}
-.who-btn.active { border-color: var(--primary); color: var(--text); background: color-mix(in srgb, var(--primary) 14%, transparent); }
-
 .auth-error {
   color: #E0526B; font-size: 12.5px; min-height: 16px; margin-top: -6px; margin-bottom: 10px;
 }
@@ -482,7 +561,6 @@ a:focus-visible, button:focus-visible {
 .page.active { display:block; }
 #screen-login.hidden, #app.hidden { display:none; }
 .profile-card-view { display:flex; gap:16px; align-items:flex-start; }
-.profile-avatar-emoji { font-size:40px; width:60px; height:60px; border-radius:50%; background:var(--surface-2); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
 .pref-row { display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--border); font-size:14px; }
 .pref-row:last-child{border-bottom:none;}
 .pref-row span.k{color:var(--text-muted);}
@@ -498,6 +576,8 @@ a:focus-visible, button:focus-visible {
 </head>
 <body>
 
+<div class="theme-fx" id="themeFx"></div>
+
 <!-- ===================== LOGIN SCREEN ===================== -->
 <div id="screen-login" class="auth-wrap">
   <div class="auth-card">
@@ -505,19 +585,14 @@ a:focus-visible, button:focus-visible {
     <h1>OurHeaven</h1>
     <p class="sub">A private space for just the two of us.</p>
 
-    <div class="who-select" id="whoSelect">
-      <button class="who-btn active" data-who="a" type="button">Partner A</button>
-      <button class="who-btn" data-who="b" type="button">Partner B</button>
-    </div>
-
     <div class="field" style="text-align:left;">
       <label for="password">Your secret password</label>
-      <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" />
+      <input type="password" id="password" placeholder="••••••••" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false" />
     </div>
 
     <div class="auth-error" id="authError"></div>
     <button class="btn btn-primary" style="width:100%;" id="loginBtn">Enter OurHeaven</button>
-    <p class="auth-footnote">No sign-up here — just the two secret passwords you both already know.</p>
+    <p class="auth-footnote"> just the two secret passwords you both already know.</p>
   </div>
 </div>
 
@@ -733,7 +808,8 @@ a:focus-visible, button:focus-visible {
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
-  getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut
+  getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut,
+  setPersistence, inMemoryPersistence
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   getFirestore, doc, getDoc, setDoc, updateDoc,
@@ -757,6 +833,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+// No persistence at all: closing, reloading, or reopening the tab always
+// asks for the password again — nothing is remembered by the browser.
+await setPersistence(auth, inMemoryPersistence);
 
 const COUPLE_ID = "heaven";
 
@@ -779,16 +858,6 @@ let state = { journal: [], questions: [], bucketList: [], dateIdeas: [], goals: 
 let currentPage = "dashboard";
 
 /* ---------------- Auth ---------------- */
-let selectedWho = "a";
-document.querySelectorAll(".who-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".who-btn").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    selectedWho = btn.dataset.who;
-    document.getElementById("authError").textContent = "";
-  });
-});
-
 document.getElementById("loginBtn").addEventListener("click", doLogin);
 document.getElementById("password").addEventListener("keydown", e => { if (e.key === "Enter") doLogin(); });
 
@@ -797,11 +866,18 @@ async function doLogin() {
   const errEl = document.getElementById("authError");
   errEl.textContent = "";
   if (!pw) { errEl.textContent = "Enter your secret password."; return; }
+  const btn = document.getElementById("loginBtn");
+  btn.disabled = true;
   try {
-    await signInWithEmailAndPassword(auth, PARTNER_EMAILS[selectedWho], pw);
-  } catch (e) {
-    errEl.textContent = "That password doesn't match.";
+    await signInWithEmailAndPassword(auth, PARTNER_EMAILS.a, pw);
+  } catch (e1) {
+    try {
+      await signInWithEmailAndPassword(auth, PARTNER_EMAILS.b, pw);
+    } catch (e2) {
+      errEl.textContent = "That password doesn't match.";
+    }
   }
+  btn.disabled = false;
 }
 
 document.getElementById("logoutBtn").addEventListener("click", (e) => {
@@ -814,6 +890,7 @@ onAuthStateChanged(auth, async (user) => {
     session = null;
     document.getElementById("screen-login").classList.remove("hidden");
     document.getElementById("app").classList.add("hidden");
+    document.getElementById("password").value = "";
     return;
   }
   const who = user.email === PARTNER_EMAILS.a ? "a" : user.email === PARTNER_EMAILS.b ? "b" : null;
@@ -832,8 +909,8 @@ async function ensureCoupleDoc() {
     await setDoc(coupleRef, {
       couple: { startDate: "2023-02-14", anniversaryMonthDay: "02-14", partnerABirthday: "", partnerBBirthday: "" },
       users: {
-        a: { name: "Partner A", nickname: "Love", status: "", about: "", quote: "", emoji: "💗", badge: "" },
-        b: { name: "Partner B", nickname: "Darling", status: "", about: "", quote: "", emoji: "🌙", badge: "" }
+        a: { name: "Partner A", nickname: "Love", status: "", about: "", quote: "", badge: "" },
+        b: { name: "Partner B", nickname: "Darling", status: "", about: "", quote: "", badge: "" }
       },
       preferences: { a: {}, b: {} }
     });
@@ -940,38 +1017,46 @@ function renderProfile() {
   const who = session.who, other = who === "a" ? "b" : "a";
   const mine = coupleData.users?.[who] || {};
   const theirs = coupleData.users?.[other] || {};
+  const c = coupleData.couple || {};
+  // Anniversary is stored as MM-DD (annual, no year). If we already have a
+  // full anniversary date saved, show it pre-filled with the current year
+  // just so the date picker has something sensible to display.
+  const annivPreview = c.anniversaryMonthDay ? `${new Date().getFullYear()}-${c.anniversaryMonthDay}` : "";
+
   document.getElementById("profileCards").innerHTML = `
     <div class="card">
       <div class="badge" style="margin-bottom:10px;">Your profile</div>
-      <div class="profile-card-view">
-        <div class="profile-avatar-emoji">${mine.emoji || "💗"}</div>
-        <div style="flex:1;">
-          <div class="field"><label>Display name</label><input id="p_name" value="${escAttr(mine.name)}"/></div>
-          <div class="field"><label>Nickname</label><input id="p_nickname" value="${escAttr(mine.nickname)}"/></div>
-          <div class="field"><label>Status</label><input id="p_status" value="${escAttr(mine.status)}"/></div>
-          <div class="field"><label>About me</label><textarea id="p_about">${escHtml(mine.about)}</textarea></div>
-          <div class="field"><label>Favourite quote</label><input id="p_quote" value="${escAttr(mine.quote)}"/></div>
-          <div class="field"><label>Favourite emoji</label><input id="p_emoji" value="${escAttr(mine.emoji)}"/></div>
-          <div class="field"><label>Badge</label><input id="p_badge" value="${escAttr(mine.badge)}"/></div>
-          <button class="btn btn-primary" id="p_save">Save profile</button>
-        </div>
-      </div>
+      <div class="field"><label>Display name</label><input id="p_name" value="${escAttr(mine.name)}"/></div>
+      <div class="field"><label>Nickname</label><input id="p_nickname" value="${escAttr(mine.nickname)}"/></div>
+      <div class="field"><label>Status</label><input id="p_status" value="${escAttr(mine.status)}"/></div>
+      <div class="field"><label>About me</label><textarea id="p_about">${escHtml(mine.about)}</textarea></div>
+      <div class="field"><label>Favourite quote</label><input id="p_quote" value="${escAttr(mine.quote)}"/></div>
+      <div class="field"><label>Badge</label><input id="p_badge" value="${escAttr(mine.badge)}"/></div>
+      <button class="btn btn-primary" id="p_save">Save profile</button>
     </div>
     <div class="card">
       <div class="badge" style="margin-bottom:10px;">Their profile</div>
-      <div class="profile-card-view">
-        <div class="profile-avatar-emoji">${theirs.emoji || "🌙"}</div>
-        <div>
-          <h3>${esc(theirs.nickname || theirs.name || "Partner")}</h3>
-          <p style="margin-top:6px;">${esc(theirs.status || "No status set")}</p>
-          <hr class="divider"/>
-          <p>${esc(theirs.about || "Nothing written yet.")}</p>
-          ${theirs.quote ? `<p style="margin-top:10px; font-style:italic;">"${esc(theirs.quote)}"</p>` : ""}
-          ${theirs.badge ? `<div class="badge" style="margin-top:12px;">${esc(theirs.badge)}</div>` : ""}
-        </div>
+      <h3>${esc(theirs.nickname || theirs.name || "Partner")}</h3>
+      <p style="margin-top:6px;">${esc(theirs.status || "No status set")}</p>
+      <hr class="divider"/>
+      <p>${esc(theirs.about || "Nothing written yet.")}</p>
+      ${theirs.quote ? `<p style="margin-top:10px; font-style:italic;">"${esc(theirs.quote)}"</p>` : ""}
+      ${theirs.badge ? `<div class="badge" style="margin-top:12px;">${esc(theirs.badge)}</div>` : ""}
+    </div>
+    <div class="card" style="grid-column: 1 / -1;">
+      <div class="badge" style="margin-bottom:10px;">Relationship details</div>
+      <p style="margin-bottom:16px;">Set these once — "days together" and the anniversary countdown on your dashboard update themselves from here every day after.</p>
+      <div class="grid grid-3">
+        <div class="field"><label>Relationship start date</label><input id="rel_start" type="date" value="${escAttr(c.startDate)}"/></div>
+        <div class="field"><label>Anniversary date</label><input id="rel_anniv" type="date" value="${escAttr(annivPreview)}"/></div>
+        <div></div>
+        <div class="field"><label>Partner A's birthday</label><input id="rel_bdayA" type="date" value="${escAttr(c.partnerABirthday)}"/></div>
+        <div class="field"><label>Partner B's birthday</label><input id="rel_bdayB" type="date" value="${escAttr(c.partnerBBirthday)}"/></div>
       </div>
+      <button class="btn btn-primary" id="rel_save">Save relationship details</button>
     </div>
   `;
+
   document.getElementById("p_save").addEventListener("click", async () => {
     const updated = {
       name: document.getElementById("p_name").value,
@@ -979,10 +1064,19 @@ function renderProfile() {
       status: document.getElementById("p_status").value,
       about: document.getElementById("p_about").value,
       quote: document.getElementById("p_quote").value,
-      emoji: document.getElementById("p_emoji").value,
       badge: document.getElementById("p_badge").value,
     };
     await updateDoc(coupleRef, { [`users.${who}`]: { ...mine, ...updated } });
+  });
+
+  document.getElementById("rel_save").addEventListener("click", async () => {
+    const annivDate = document.getElementById("rel_anniv").value;
+    await updateDoc(coupleRef, {
+      "couple.startDate": document.getElementById("rel_start").value || c.startDate || "",
+      "couple.anniversaryMonthDay": annivDate ? annivDate.slice(5) : (c.anniversaryMonthDay || ""),
+      "couple.partnerABirthday": document.getElementById("rel_bdayA").value || "",
+      "couple.partnerBBirthday": document.getElementById("rel_bdayB").value || "",
+    });
   });
 }
 function escAttr(s){ return escHtml(s).replace(/"/g,"&quot;"); }
@@ -1204,10 +1298,11 @@ const THEME_CATALOG = {
   "Dark Romance": [["dark-romance","Dark Romance"],["crimson-hearts","Crimson Hearts"],["midnight-roses","Midnight Roses"],["gothic-love","Gothic Love"],["vampires-ball","Vampire's Ball"],["blood-moon","Blood Moon"],["black-lace","Black Lace"],["velvet-rose","Velvet Rose"],["obsidian-hearts","Obsidian Hearts"]],
   "Night Sky": [["midnight-sky","Midnight Sky"],["aurora","Aurora"],["moonlight","Moonlight"],["galaxy","Galaxy"],["stargazer","Stargazer"],["cosmic-love","Cosmic Love"],["purple-nebula","Purple Nebula"],["blue-eclipse","Blue Eclipse"]],
   "Seasonal": [["christmas-romance","Christmas Romance"],["valentines-day","Valentine's Day"],["autumn-love","Autumn Love"],["winter-night","Winter Night"],["spring-bloom","Spring Bloom"],["summer-sunset","Summer Sunset"]],
-  "Minimal": [["pure-white","Pure White"],["midnight-black","Midnight Black"],["glass-ui","Glass UI"],["ocean-blue","Ocean Blue"],["emerald-green","Emerald Green"]]
+  "Minimal": [["pure-white","Pure White"],["midnight-black","Midnight Black"],["glass-ui","Glass UI"],["ocean-blue","Ocean Blue"],["emerald-green","Emerald Green"]],
+  "Animated": [["falling-stars","Falling Stars"],["shining-moon","Shining Moon"],["windy-meadow","Windy Meadow"],["firefly-forest","Firefly Forest"],["ocean-waves","Ocean Waves"]]
 };
 const SECRET_THEMES = [["eternal-night","Eternal Night"],["queen-of-hearts","Queen of Hearts"],["crimson-castle","Crimson Castle"],["forbidden-love","Forbidden Love"],["ravens-garden","Raven's Garden"],["black-kingdom","Black Kingdom"]];
-const SECRET_PASSPHRASE = "always & forever"; // change this to your own private phrase
+const SECRET_PASSPHRASE = "always and forever"; // change this to your own private phrase
 
 function getSettings() {
   try { return JSON.parse(localStorage.getItem("ourheaven-settings")) || { mode: "dark", theme: "classic-love", secretUnlocked: false }; }
@@ -1217,6 +1312,69 @@ function saveSettings(s) { localStorage.setItem("ourheaven-settings", JSON.strin
 function applyTheme(theme, mode) {
   document.documentElement.setAttribute("data-theme", theme);
   document.documentElement.setAttribute("data-mode", mode);
+  renderThemeFx(theme);
+}
+
+function renderThemeFx(themeId) {
+  const fx = document.getElementById("themeFx");
+  fx.innerHTML = "";
+  const rand = (min, max) => min + Math.random() * (max - min);
+
+  if (themeId === "falling-stars") {
+    for (let i = 0; i < 16; i++) {
+      const s = document.createElement("div");
+      s.className = "fx-shoot";
+      s.style.setProperty("--x", rand(0, 100) + "%");
+      s.style.setProperty("--d", rand(0, 7) + "s");
+      s.style.animationDuration = rand(2.6, 4.6) + "s";
+      fx.appendChild(s);
+    }
+  } else if (themeId === "shining-moon") {
+    fx.appendChild(document.createElement("div")).className = "fx-moon";
+    for (let i = 0; i < 45; i++) {
+      const s = document.createElement("div");
+      s.className = "fx-star";
+      s.style.top = rand(0, 75) + "%";
+      s.style.left = rand(0, 100) + "%";
+      s.style.animationDelay = rand(0, 3) + "s";
+      fx.appendChild(s);
+    }
+  } else if (themeId === "windy-meadow") {
+    const wrap = document.createElement("div");
+    wrap.className = "fx-grass-wrap";
+    for (let i = 0; i < 70; i++) {
+      const b = document.createElement("div");
+      b.className = "fx-blade";
+      b.style.height = rand(18, 60) + "px";
+      b.style.animationDelay = rand(0, 2.4) + "s";
+      wrap.appendChild(b);
+    }
+    fx.appendChild(wrap);
+    for (let i = 0; i < 14; i++) {
+      const p = document.createElement("div");
+      p.className = "fx-petal";
+      p.style.left = rand(0, 100) + "%";
+      p.style.animationDelay = rand(0, 8) + "s";
+      p.style.animationDuration = rand(6, 11) + "s";
+      fx.appendChild(p);
+    }
+  } else if (themeId === "firefly-forest") {
+    for (let i = 0; i < 24; i++) {
+      const f = document.createElement("div");
+      f.className = "fx-firefly";
+      f.style.top = rand(0, 90) + "%";
+      f.style.left = rand(0, 100) + "%";
+      f.style.animationDelay = rand(0, 5) + "s";
+      f.style.animationDuration = rand(6, 11) + "s";
+      fx.appendChild(f);
+    }
+  } else if (themeId === "ocean-waves") {
+    const w1 = document.createElement("div"); w1.className = "fx-wave"; fx.appendChild(w1);
+    const w2 = document.createElement("div"); w2.className = "fx-wave two"; fx.appendChild(w2);
+    const m = document.createElement("div"); m.className = "fx-moon";
+    m.style.width = "70px"; m.style.height = "70px"; m.style.top = "10%"; m.style.opacity = ".85";
+    fx.appendChild(m);
+  }
 }
 let settings = getSettings();
 applyTheme(settings.theme, settings.mode);
