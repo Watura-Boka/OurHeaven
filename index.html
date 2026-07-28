@@ -36,6 +36,7 @@
   --primary: #C13E62;
   --primary-soft: #E88AA6;
   --accent: #C9A66B;
+  --on-primary: #FFFFFF; /* text/icon color that sits on top of --primary; themes with a light primary override this to a dark ink instead */
   --text: #F6E9EC;
   --text-muted: #B79AA4;
   --border: rgba(246,233,236,0.10);
@@ -62,12 +63,12 @@
 /* ================= ROMANTIC ================= */
 [data-theme="classic-love"]  { --primary:#C13E62; --accent:#C9A66B; }
 [data-theme="pink-blossom"]  { --bg:#1D1116; --surface:#271620; --primary:#E85C8A; --accent:#F2B6C6; }
-[data-theme="soft-hearts"]   { --bg:#1C1215; --surface:#26161B; --primary:#E27C93; --accent:#F0CFC2; }
+[data-theme="soft-hearts"]   { --bg:#1C1215; --surface:#26161B; --primary:#E27C93; --accent:#F0CFC2; --on-primary:#1C1215; }
 [data-theme="rose-garden"]   { --bg:#160F12; --surface:#231519; --primary:#B23A52; --accent:#7FA870; }
-[data-theme="cherry-blossom"]{ --bg:#1A1014; --surface:#25151B; --primary:#F08FB0; --accent:#F7DCE4; }
+[data-theme="cherry-blossom"]{ --bg:#1A1014; --surface:#25151B; --primary:#F08FB0; --accent:#F7DCE4; --on-primary:#1A1014; }
 [data-theme="lavender-love"] { --bg:#150F1C; --surface:#20172B; --primary:#9B7EDE; --accent:#D8B6E8; }
-[data-theme="golden-sunset"] { --bg:#1C130D; --surface:#2A1B10; --primary:#E0893F; --accent:#F2C879; }
-[data-theme="peach-romance"] { --bg:#1C1310; --surface:#2A1C15; --primary:#F0966B; --accent:#F7D3B0; }
+[data-theme="golden-sunset"] { --bg:#1C130D; --surface:#2A1B10; --primary:#E0893F; --accent:#F2C879; --on-primary:#1C130D; }
+[data-theme="peach-romance"] { --bg:#1C1310; --surface:#2A1C15; --primary:#F0966B; --accent:#F7D3B0; --on-primary:#1C1310; }
 
 /* ============== DARK ROMANCE COLLECTION ============== */
 [data-theme="dark-romance"]   { --bg:#12080C; --surface:#1D0F14; --primary:#9C2545; --accent:#7A6B5D; --text:#F1E2E6; }
@@ -82,8 +83,8 @@
 
 /* ============== NIGHT SKY COLLECTION ============== */
 [data-theme="midnight-sky"]  { --bg:#0A0D18; --surface:#131828; --primary:#5C6FD8; --accent:#C9A66B; --text:#E7EAF6; }
-[data-theme="aurora"]        { --bg:#081414; --surface:#0F2222; --primary:#3FC1A0; --accent:#8A6FD8; --text:#E4F5F0; }
-[data-theme="moonlight"]     { --bg:#0B0F1A; --surface:#151B2C; --primary:#8FA6D6; --accent:#E5E9F5; --text:#EDEFF7; }
+[data-theme="aurora"]        { --bg:#081414; --surface:#0F2222; --primary:#3FC1A0; --accent:#8A6FD8; --text:#E4F5F0; --on-primary:#081414; }
+[data-theme="moonlight"]     { --bg:#0B0F1A; --surface:#151B2C; --primary:#8FA6D6; --accent:#E5E9F5; --text:#EDEFF7; --on-primary:#0B0F1A; }
 [data-theme="galaxy"]        { --bg:#0A0716; --surface:#160F2A; --primary:#8B5FD6; --accent:#E0629B; --text:#EDE6FA; }
 [data-theme="stargazer"]     { --bg:#070A16; --surface:#101529; --primary:#4E7FD8; --accent:#F2C879; --text:#E5EAF7; }
 [data-theme="cosmic-love"]   { --bg:#0C0818; --surface:#170F2C; --primary:#C1519B; --accent:#5FA8D6; --text:#F0E6F5; }
@@ -95,22 +96,101 @@
 [data-theme="valentines-day"]    { --bg:#180A10; --surface:#26121C; --primary:#E0416B; --accent:#F2A6C1; }
 [data-theme="autumn-love"]       { --bg:#170F0A; --surface:#251A10; --primary:#C4622A; --accent:#E0A94A; }
 [data-theme="winter-night"]      { --bg:#0A1018; --surface:#131E2A; --primary:#5F8FC4; --accent:#DDE7F2; --text:#E9F0F7; }
-[data-theme="spring-bloom"]      { --bg:#0E1610; --surface:#17251A; --primary:#7BB06A; --accent:#F0A6C6; --text:#EAF3EA; }
+[data-theme="spring-bloom"]      { --bg:#0E1610; --surface:#17251A; --primary:#7BB06A; --accent:#F0A6C6; --text:#EAF3EA; --on-primary:#0E1610; }
 [data-theme="summer-sunset"]     { --bg:#1A0F0C; --surface:#291A12; --primary:#E0693F; --accent:#F2C34A; }
 
 /* ============== MINIMAL ============== */
 [data-theme="pure-white"]   { --bg:#FFFFFF; --bg-soft:#FFFFFF; --surface:#F7F5F3; --surface-2:#EFECE9; --primary:#B0294A; --accent:#C9A66B; --text:#231620; --text-muted:#7A6E76; --border:rgba(35,22,32,.08); --shadow:0 12px 32px rgba(0,0,0,.08); }
 [data-theme="midnight-black"]{ --bg:#000000; --bg-soft:#000000; --surface:#0D0D0D; --surface-2:#161616; --primary:#D6455F; --accent:#C9A66B; --text:#F2F2F2; --text-muted:#8C8C8C; }
-[data-theme="glass-ui"]      { --bg:#10131C; --surface:rgba(255,255,255,0.06); --surface-2:rgba(255,255,255,0.10); --primary:#7C9CE0; --accent:#E0A6D6; --text:#EEF1FA; --border:rgba(255,255,255,0.14); }
+[data-theme="glass-ui"]      { --bg:#10131C; --surface:rgba(255,255,255,0.06); --surface-2:rgba(255,255,255,0.10); --primary:#7C9CE0; --accent:#E0A6D6; --text:#EEF1FA; --border:rgba(255,255,255,0.14); --on-primary:#10131C; }
 [data-theme="ocean-blue"]    { --bg:#061520; --surface:#0D2331; --primary:#2E9BC4; --accent:#7FD9D4; --text:#E4F3F7; }
 [data-theme="emerald-green"] { --bg:#08160F; --surface:#0F2419; --primary:#2E9C6B; --accent:#C9A66B; --text:#E5F5EC; }
 
 /* ============== ANIMATED COLLECTION (living backgrounds) ============== */
-[data-theme="falling-stars"] { --bg:#050812; --surface:#0D1224; --primary:#8FB3FF; --accent:#F2C879; --text:#E8ECFB; }
-[data-theme="shining-moon"]  { --bg:#040613; --surface:#0B0F22; --primary:#DCE6FF; --accent:#9FB6E8; --text:#EEF1FB; }
-[data-theme="windy-meadow"]  { --bg:#1B1030; --surface:#2A1B3D; --primary:#E0895A; --accent:#7BB06A; --text:#F5EAE0; }
-[data-theme="firefly-forest"]{ --bg:#050C08; --surface:#0D1810; --primary:#8FD16B; --accent:#D7FF8A; --text:#E7F5E4; }
+[data-theme="falling-stars"] { --bg:#050812; --surface:#0D1224; --primary:#8FB3FF; --accent:#F2C879; --text:#E8ECFB; --on-primary:#050812; }
+[data-theme="shining-moon"]  { --bg:#040613; --surface:#0B0F22; --primary:#DCE6FF; --accent:#9FB6E8; --text:#EEF1FB; --on-primary:#1A2036; }
+[data-theme="windy-meadow"]  { --bg:#1B1030; --surface:#2A1B3D; --primary:#E0895A; --accent:#7BB06A; --text:#F5EAE0; --on-primary:#1B1030; }
+[data-theme="firefly-forest"]{ --bg:#050C08; --surface:#0D1810; --primary:#8FD16B; --accent:#D7FF8A; --text:#E7F5E4; --on-primary:#0E1F0F; }
 [data-theme="ocean-waves"]   { --bg:#031019; --surface:#082234; --primary:#3FA9C4; --accent:#8FE3D8; --text:#E4F6F7; }
+
+/* Scenic themes get a rich, static, hand-composed background instead of the
+   plain --bg color. No animation — just layered gradients for atmosphere. */
+body[data-theme="falling-stars"] {
+  background:
+    radial-gradient(650px 420px at 85% -8%, rgba(143,179,255,0.22), transparent 60%),
+    radial-gradient(1.3px 1.3px at 63.4% 3.7%, rgba(255,255,255,0.61), transparent 60%),
+    radial-gradient(1.9px 1.9px at 72.7% 48.0%, rgba(255,255,255,0.54), transparent 60%),
+    radial-gradient(1.2px 1.2px at 42.5% 4.0%, rgba(255,255,255,0.75), transparent 60%),
+    radial-gradient(1.6px 1.6px at 4.5% 15.5%, rgba(255,255,255,0.77), transparent 60%),
+    radial-gradient(1.8px 1.8px at 23.2% 42.1%, rgba(255,255,255,0.5), transparent 60%),
+    radial-gradient(1.3px 1.3px at 79.4% 49.5%, rgba(255,255,255,0.58), transparent 60%),
+    radial-gradient(1.1px 1.1px at 93.9% 24.9%, rgba(255,255,255,0.55), transparent 60%),
+    radial-gradient(1.8px 1.8px at 83.4% 43.1%, rgba(255,255,255,0.86), transparent 60%),
+    radial-gradient(1.4px 1.4px at 53.5% 68.2%, rgba(255,255,255,0.78), transparent 60%),
+    radial-gradient(1.9px 1.9px at 81.6% 44.1%, rgba(255,255,255,0.79), transparent 60%),
+    radial-gradient(1.2px 1.2px at 69.6% 5.1%, rgba(255,255,255,0.64), transparent 60%),
+    radial-gradient(1.1px 1.1px at 9.7% 17.8%, rgba(255,255,255,0.64), transparent 60%),
+    radial-gradient(1.4px 1.4px at 63.0% 26.8%, rgba(255,255,255,0.6), transparent 60%),
+    radial-gradient(1.6px 1.6px at 27.6% 65.7%, rgba(255,255,255,0.8), transparent 60%),
+    radial-gradient(1.2px 1.2px at 18.4% 51.6%, rgba(255,255,255,0.69), transparent 60%),
+    radial-gradient(1.6px 1.6px at 97.0% 45.5%, rgba(255,255,255,0.84), transparent 60%),
+    radial-gradient(1.2px 1.2px at 32.3% 20.2%, rgba(255,255,255,0.97), transparent 60%),
+    radial-gradient(1.7px 1.7px at 86.1% 23.4%, rgba(255,255,255,0.7), transparent 60%),
+    radial-gradient(1.6px 1.6px at 55.9% 19.9%, rgba(255,255,255,0.95), transparent 60%),
+    radial-gradient(2px 2px at 40.3% 16.9%, rgba(255,255,255,0.75), transparent 60%),
+    linear-gradient(180deg, #050812 0%, #0a1330 55%, #0d1a3a 100%);
+  background-attachment: fixed; --on-primary:#150912; }
+body[data-theme="shining-moon"] {
+  background:
+    radial-gradient(170px 170px at 82% 15%, #ffffff 0%, #dfe6f5 55%, transparent 78%),
+    radial-gradient(260px 260px at 82% 15%, rgba(255,255,255,.28), transparent 70%),
+    radial-gradient(1.3px 1.3px at 10.7% 5.2%, rgba(255,255,255,0.85), transparent 60%),
+    radial-gradient(1.3px 1.3px at 78.0% 30.7%, rgba(255,255,255,0.75), transparent 60%),
+    radial-gradient(2.4px 2.4px at 97.6% 38.0%, rgba(255,255,255,0.94), transparent 60%),
+    radial-gradient(2px 2px at 3.1% 51.0%, rgba(255,255,255,0.81), transparent 60%),
+    radial-gradient(1.3px 1.3px at 27.6% 45.6%, rgba(255,255,255,0.77), transparent 60%),
+    radial-gradient(2.3px 2.3px at 45.6% 66.9%, rgba(255,255,255,0.71), transparent 60%),
+    radial-gradient(2.3px 2.3px at 50.1% 14.1%, rgba(255,255,255,0.95), transparent 60%),
+    radial-gradient(1.9px 1.9px at 30.7% 45.4%, rgba(255,255,255,0.66), transparent 60%),
+    radial-gradient(2.1px 2.1px at 75.2% 38.7%, rgba(255,255,255,0.81), transparent 60%),
+    radial-gradient(1.2px 1.2px at 2.1% 24.0%, rgba(255,255,255,0.97), transparent 60%),
+    radial-gradient(1.6px 1.6px at 86.4% 58.6%, rgba(255,255,255,0.62), transparent 60%),
+    radial-gradient(1.3px 1.3px at 86.3% 66.4%, rgba(255,255,255,0.79), transparent 60%),
+    radial-gradient(2.1px 2.1px at 8.6% 53.7%, rgba(255,255,255,0.65), transparent 60%),
+    radial-gradient(1.5px 1.5px at 47.6% 39.4%, rgba(255,255,255,0.95), transparent 60%),
+    radial-gradient(1.8px 1.8px at 42.6% 16.4%, rgba(255,255,255,0.89), transparent 60%),
+    radial-gradient(2.4px 2.4px at 21.3% 23.2%, rgba(255,255,255,0.86), transparent 60%),
+    linear-gradient(180deg, #040613 0%, #0a1024 55%, #0b0f22 100%);
+  background-attachment: fixed;
+}
+body[data-theme="windy-meadow"] {
+  background:
+    linear-gradient(180deg, #241238 0%, #4a2a4f 26%, #a85a45 48%, #e0895a 60%, #f2b06a 68%, transparent 68%),
+    radial-gradient(120px 60px at 20% 63%, rgba(255,255,255,.25), transparent 70%),
+    radial-gradient(90px 45px at 75% 60%, rgba(255,255,255,.18), transparent 70%),
+    radial-gradient(ellipse 120% 60% at 50% 100%, #3c5a2c 0%, #24401c 55%, #1a3015 100%),
+    #1B1030;
+  background-attachment: fixed; --on-primary:#150912; }
+body[data-theme="firefly-forest"] {
+  background:
+    radial-gradient(150px 150px at 20% 28%, rgba(215,255,138,.32), transparent 70%),
+    radial-gradient(110px 110px at 72% 55%, rgba(143,209,107,.28), transparent 70%),
+    radial-gradient(90px 90px at 46% 78%, rgba(215,255,138,.22), transparent 70%),
+    radial-gradient(70px 70px at 86% 22%, rgba(215,255,138,.18), transparent 70%),
+    radial-gradient(60px 60px at 12% 82%, rgba(143,209,107,.2), transparent 70%),
+    linear-gradient(180deg, #050c08 0%, #0a160d 50%, #0d1810 100%);
+  background-attachment: fixed;
+}
+body[data-theme="ocean-waves"] {
+  background:
+    radial-gradient(90px 90px at 78% 16%, #eaf6ff 0%, #cfe9f2 55%, transparent 75%),
+    radial-gradient(160px 160px at 78% 16%, rgba(234,246,255,.25), transparent 70%),
+    radial-gradient(ellipse 60% 20% at 20% 82%, rgba(255,255,255,.10), transparent 70%),
+    radial-gradient(ellipse 55% 18% at 65% 90%, rgba(255,255,255,.08), transparent 70%),
+    radial-gradient(ellipse 70% 25% at 90% 100%, rgba(255,255,255,.10), transparent 70%),
+    linear-gradient(180deg, #031019 0%, #052235 45%, #0a3348 72%, #114a5e 100%);
+  background-attachment: fixed;
+}
 
 /* ============== SECRET THEMES (unlocked via passphrase) ============== */
 [data-theme="eternal-night"]    { --bg:#020103; --surface:#0A0710; --primary:#6E1F6E; --accent:#C9A66B; --text:#E9E2F0; --shadow:0 0 80px rgba(110,31,110,.35); }
@@ -146,6 +226,13 @@ body::before {
   background:
     radial-gradient(650px 420px at 85% -8%, color-mix(in srgb, var(--primary) 20%, transparent), transparent 65%),
     radial-gradient(500px 380px at -5% 105%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 65%);
+}
+body[data-theme="falling-stars"]::before,
+body[data-theme="shining-moon"]::before,
+body[data-theme="windy-meadow"]::before,
+body[data-theme="firefly-forest"]::before,
+body[data-theme="ocean-waves"]::before {
+  content: none;
 }
 
 a { color: inherit; text-decoration: none; }
@@ -193,13 +280,6 @@ button, input, select, textarea { font-family: var(--font-body); }
   align-items: center;
   gap: 10px;
   padding: 6px 10px 22px;
-}
-.brand .seal {
-  width: 34px; height: 34px; border-radius: 50%;
-  background: linear-gradient(145deg, var(--primary), var(--accent));
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-display); color: #fff; font-size: 15px; font-weight: 700;
-  box-shadow: 0 6px 16px color-mix(in srgb, var(--primary) 50%, transparent);
 }
 .brand .name { font-family: var(--font-display); font-size: 19px; font-weight: 600; }
 
@@ -316,7 +396,7 @@ button, input, select, textarea { font-family: var(--font-body); }
   transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), opacity var(--dur) var(--ease);
 }
 .btn:active { transform: scale(.97); }
-.btn-primary { background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 60%, var(--accent))); color: #fff; box-shadow: 0 10px 24px color-mix(in srgb, var(--primary) 45%, transparent); }
+.btn-primary { background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 60%, var(--accent))); color: var(--on-primary, #fff); box-shadow: 0 10px 24px color-mix(in srgb, var(--primary) 45%, transparent); }
 .btn-primary:hover { box-shadow: 0 14px 30px color-mix(in srgb, var(--primary) 55%, transparent); }
 .btn-ghost { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
 .btn-danger { background: transparent; color: #E0526B; border: 1px solid color-mix(in srgb, #E0526B 40%, transparent); }
@@ -404,7 +484,7 @@ a:focus-visible, button:focus-visible {
   position: relative; animation: pop 220ms var(--ease);
 }
 @keyframes pop { from { opacity:0; transform: translateY(6px) scale(.97);} to {opacity:1; transform:none;} }
-.bubble-row.me .bubble { background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 60%, var(--accent))); color:#fff; border-bottom-right-radius: 5px; }
+.bubble-row.me .bubble { background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 60%, var(--accent))); color: var(--on-primary, #fff); border-bottom-right-radius: 5px; }
 .bubble-row.them .bubble { background: var(--surface-2); border: 1px solid var(--border); border-bottom-left-radius: 5px; }
 .bubble .meta { font-size: 10.5px; opacity:.7; margin-top: 4px; }
 .typing-dots { display:flex; gap:4px; padding: 4px 2px; }
@@ -425,88 +505,6 @@ a:focus-visible, button:focus-visible {
 .theme-swatch .preview { height: 44px; border-radius: 8px; margin-bottom: 10px; }
 .theme-swatch .tname { font-size: 12.5px; font-weight: 700; }
 
-/* ---------------- Animated theme FX layer ---------------- */
-.theme-fx { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
-
-.fx-shoot {
-  position: absolute; top: -5%; left: var(--x, 10%);
-  width: 2px; height: 2px; border-radius: 50%;
-  background: #fff; box-shadow: 0 0 8px 2px rgba(255,255,255,.9);
-  animation: fxShoot 3.4s linear infinite;
-  animation-delay: var(--d, 0s);
-}
-.fx-shoot::before {
-  content: ""; position: absolute; top: 0; left: 0; width: 90px; height: 1px;
-  background: linear-gradient(90deg, rgba(255,255,255,.9), transparent);
-  transform-origin: left center; transform: rotate(215deg);
-}
-@keyframes fxShoot {
-  0% { transform: translate(0,0); opacity: 0; }
-  4% { opacity: 1; }
-  38% { transform: translate(-62vw, 62vh); opacity: 0; }
-  100% { transform: translate(-62vw, 62vh); opacity: 0; }
-}
-
-.fx-star {
-  position: absolute; width: 2px; height: 2px; border-radius: 50%;
-  background: #fff; opacity: .3;
-  animation: fxTwinkle 2.6s ease-in-out infinite;
-}
-@keyframes fxTwinkle { 0%,100% { opacity:.2; transform:scale(.8);} 50% { opacity:1; transform:scale(1.3);} }
-
-.fx-moon {
-  position: absolute; top: 9%; right: 11%; width: 120px; height: 120px; border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #ffffff, #dfe6f5 60%, #b9c6e0 100%);
-  box-shadow: 0 0 60px 20px rgba(255,255,255,.35);
-  animation: fxMoonGlow 6s ease-in-out infinite;
-}
-@keyframes fxMoonGlow {
-  0%,100% { box-shadow: 0 0 60px 20px rgba(255,255,255,.30); }
-  50% { box-shadow: 0 0 95px 36px rgba(255,255,255,.55); }
-}
-
-.fx-grass-wrap { position: absolute; bottom: 0; left: 0; right: 0; height: 74px; display: flex; align-items: flex-end; overflow: hidden; }
-.fx-blade {
-  width: 6px; margin-right: 2px; border-radius: 5px 5px 0 0;
-  background: linear-gradient(180deg, #7fa860, #3c5a2c);
-  transform-origin: bottom center;
-  animation: fxSway 2.6s ease-in-out infinite;
-}
-@keyframes fxSway { 0%,100% { transform: rotate(-7deg); } 50% { transform: rotate(7deg); } }
-
-.fx-petal {
-  position: absolute; top: -5%; width: 8px; height: 8px; border-radius: 50% 0 50% 50%;
-  background: #f2b6c6; opacity: 0;
-  animation: fxDrift 8s linear infinite;
-}
-@keyframes fxDrift {
-  0% { transform: translate(0,0) rotate(0deg); opacity: 0; }
-  10% { opacity: .85; }
-  100% { transform: translate(40px, 120vh) rotate(360deg); opacity: 0; }
-}
-
-.fx-firefly {
-  position: absolute; width: 5px; height: 5px; border-radius: 50%;
-  background: #d7ff8a; box-shadow: 0 0 8px 3px rgba(215,255,138,.8);
-  animation: fxFly 9s ease-in-out infinite;
-}
-@keyframes fxFly {
-  0% { transform: translate(0,0); opacity: .3; }
-  20% { transform: translate(30px,-22px); opacity: 1; }
-  40% { transform: translate(-22px,-42px); opacity: .6; }
-  60% { transform: translate(26px,-8px); opacity: 1; }
-  80% { transform: translate(-16px,20px); opacity: .4; }
-  100% { transform: translate(0,0); opacity: .3; }
-}
-
-.fx-wave {
-  position: absolute; bottom: -6px; left: -50%; width: 200%; height: 90px;
-  background: repeating-linear-gradient(90deg, rgba(255,255,255,.10) 0 40px, transparent 40px 80px);
-  border-radius: 50% 50% 0 0 / 70% 70% 0 0;
-  animation: fxWave 9s linear infinite;
-}
-.fx-wave.two { bottom: -16px; opacity: .55; animation-duration: 12s; animation-direction: reverse; }
-@keyframes fxWave { from { transform: translateX(0); } to { transform: translateX(-25%); } }
 
 /* ---------------- Responsive ---------------- */
 @media (max-width: 900px) {
@@ -541,14 +539,6 @@ a:focus-visible, button:focus-visible {
   text-align: center;
   animation: fadeUp 500ms var(--ease);
 }
-.auth-seal {
-  width: 62px; height: 62px; margin: 0 auto 18px;
-  border-radius: 50%;
-  background: linear-gradient(145deg, var(--primary), var(--accent));
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-display); color: #fff; font-size: 26px; font-weight: 700;
-  box-shadow: 0 12px 30px color-mix(in srgb, var(--primary) 55%, transparent);
-}
 .auth-card h1 { font-size: 26px; margin-bottom: 6px; }
 .auth-card p.sub { margin-bottom: 26px; font-size: 13.5px; }
 
@@ -576,12 +566,9 @@ a:focus-visible, button:focus-visible {
 </head>
 <body>
 
-<div class="theme-fx" id="themeFx"></div>
-
 <!-- ===================== LOGIN SCREEN ===================== -->
 <div id="screen-login" class="auth-wrap">
   <div class="auth-card">
-    <div class="auth-seal">OH</div>
     <h1>OurHeaven</h1>
     <p class="sub">A private space for just the two of us.</p>
 
@@ -601,7 +588,6 @@ a:focus-visible, button:focus-visible {
   <div class="topbar">
     <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">☰</button>
     <div class="brand" style="padding:0;">
-      <div class="seal" style="width:28px;height:28px;font-size:12px;">OH</div>
       <div class="name" style="font-size:16px;">OurHeaven</div>
     </div>
     <span></span>
@@ -611,7 +597,6 @@ a:focus-visible, button:focus-visible {
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
       <div class="brand">
-        <div class="seal">OH</div>
         <div class="name">OurHeaven</div>
       </div>
 
@@ -1299,7 +1284,7 @@ const THEME_CATALOG = {
   "Night Sky": [["midnight-sky","Midnight Sky"],["aurora","Aurora"],["moonlight","Moonlight"],["galaxy","Galaxy"],["stargazer","Stargazer"],["cosmic-love","Cosmic Love"],["purple-nebula","Purple Nebula"],["blue-eclipse","Blue Eclipse"]],
   "Seasonal": [["christmas-romance","Christmas Romance"],["valentines-day","Valentine's Day"],["autumn-love","Autumn Love"],["winter-night","Winter Night"],["spring-bloom","Spring Bloom"],["summer-sunset","Summer Sunset"]],
   "Minimal": [["pure-white","Pure White"],["midnight-black","Midnight Black"],["glass-ui","Glass UI"],["ocean-blue","Ocean Blue"],["emerald-green","Emerald Green"]],
-  "Animated": [["falling-stars","Falling Stars"],["shining-moon","Shining Moon"],["windy-meadow","Windy Meadow"],["firefly-forest","Firefly Forest"],["ocean-waves","Ocean Waves"]]
+  "Scenic": [["falling-stars","Falling Stars"],["shining-moon","Shining Moon"],["windy-meadow","Windy Meadow"],["firefly-forest","Firefly Forest"],["ocean-waves","Ocean Waves"]]
 };
 const SECRET_THEMES = [["eternal-night","Eternal Night"],["queen-of-hearts","Queen of Hearts"],["crimson-castle","Crimson Castle"],["forbidden-love","Forbidden Love"],["ravens-garden","Raven's Garden"],["black-kingdom","Black Kingdom"]];
 const SECRET_PASSPHRASE = "always and forever"; // change this to your own private phrase
@@ -1312,69 +1297,6 @@ function saveSettings(s) { localStorage.setItem("ourheaven-settings", JSON.strin
 function applyTheme(theme, mode) {
   document.documentElement.setAttribute("data-theme", theme);
   document.documentElement.setAttribute("data-mode", mode);
-  renderThemeFx(theme);
-}
-
-function renderThemeFx(themeId) {
-  const fx = document.getElementById("themeFx");
-  fx.innerHTML = "";
-  const rand = (min, max) => min + Math.random() * (max - min);
-
-  if (themeId === "falling-stars") {
-    for (let i = 0; i < 16; i++) {
-      const s = document.createElement("div");
-      s.className = "fx-shoot";
-      s.style.setProperty("--x", rand(0, 100) + "%");
-      s.style.setProperty("--d", rand(0, 7) + "s");
-      s.style.animationDuration = rand(2.6, 4.6) + "s";
-      fx.appendChild(s);
-    }
-  } else if (themeId === "shining-moon") {
-    fx.appendChild(document.createElement("div")).className = "fx-moon";
-    for (let i = 0; i < 45; i++) {
-      const s = document.createElement("div");
-      s.className = "fx-star";
-      s.style.top = rand(0, 75) + "%";
-      s.style.left = rand(0, 100) + "%";
-      s.style.animationDelay = rand(0, 3) + "s";
-      fx.appendChild(s);
-    }
-  } else if (themeId === "windy-meadow") {
-    const wrap = document.createElement("div");
-    wrap.className = "fx-grass-wrap";
-    for (let i = 0; i < 70; i++) {
-      const b = document.createElement("div");
-      b.className = "fx-blade";
-      b.style.height = rand(18, 60) + "px";
-      b.style.animationDelay = rand(0, 2.4) + "s";
-      wrap.appendChild(b);
-    }
-    fx.appendChild(wrap);
-    for (let i = 0; i < 14; i++) {
-      const p = document.createElement("div");
-      p.className = "fx-petal";
-      p.style.left = rand(0, 100) + "%";
-      p.style.animationDelay = rand(0, 8) + "s";
-      p.style.animationDuration = rand(6, 11) + "s";
-      fx.appendChild(p);
-    }
-  } else if (themeId === "firefly-forest") {
-    for (let i = 0; i < 24; i++) {
-      const f = document.createElement("div");
-      f.className = "fx-firefly";
-      f.style.top = rand(0, 90) + "%";
-      f.style.left = rand(0, 100) + "%";
-      f.style.animationDelay = rand(0, 5) + "s";
-      f.style.animationDuration = rand(6, 11) + "s";
-      fx.appendChild(f);
-    }
-  } else if (themeId === "ocean-waves") {
-    const w1 = document.createElement("div"); w1.className = "fx-wave"; fx.appendChild(w1);
-    const w2 = document.createElement("div"); w2.className = "fx-wave two"; fx.appendChild(w2);
-    const m = document.createElement("div"); m.className = "fx-moon";
-    m.style.width = "70px"; m.style.height = "70px"; m.style.top = "10%"; m.style.opacity = ".85";
-    fx.appendChild(m);
-  }
 }
 let settings = getSettings();
 applyTheme(settings.theme, settings.mode);
