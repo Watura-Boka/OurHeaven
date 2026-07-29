@@ -562,9 +562,58 @@ a:focus-visible, button:focus-visible {
 .progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:999px;transition:width .4s var(--ease);}
 .theme-cat-label{font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin:20px 0 10px;}
 
+/* ---------------- Page transitions ---------------- */
+.page.active { animation: pageIn 320ms var(--ease); }
+@keyframes pageIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ---------------- Toast notifications ---------------- */
+.toast-stack {
+  position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%);
+  z-index: 200; display: flex; flex-direction: column; gap: 8px; align-items: center;
+  pointer-events: none;
+}
+.toast {
+  background: var(--surface); border: 1px solid var(--border); color: var(--text);
+  padding: 11px 20px; border-radius: 999px; font-size: 13px; font-weight: 600;
+  box-shadow: var(--shadow);
+  display: flex; align-items: center; gap: 8px;
+  animation: toastIn 260ms var(--ease), toastOut 260ms var(--ease) 2.4s forwards;
+}
+@keyframes toastIn { from { opacity: 0; transform: translateY(10px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes toastOut { to { opacity: 0; transform: translateY(6px) scale(.97); } }
+
+/* ---------------- Loading overlay (skeleton) ---------------- */
+.loading-overlay {
+  position: fixed; inset: 0; z-index: 150;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+  background: var(--bg);
+}
+.loading-overlay.hidden { display: none; }
+.loading-ring {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 3px solid var(--border); border-top-color: var(--primary);
+  animation: loadingSpin 800ms linear infinite;
+}
+@keyframes loadingSpin { to { transform: rotate(360deg); } }
+.loading-overlay p { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+
+/* ---------------- Presence: typing indicator + last seen + read receipts ---------------- */
+.presence-dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; background: var(--text-muted); }
+.presence-dot.online { background: #4CC38A; box-shadow: 0 0 0 3px color-mix(in srgb, #4CC38A 25%, transparent); }
+.presence-line { font-size: 12px; color: var(--text-muted); display:flex; align-items:center; margin-top: 4px; }
+.chat-typing-row { padding: 4px 40px 10px; }
+.chat-typing-row .bubble { display:inline-block; }
+.read-receipt { font-size: 10px; opacity: .75; margin-top: 2px; text-align: right; }
+
 </style>
 </head>
 <body>
+
+<div class="loading-overlay hidden" id="loadingOverlay">
+  <div class="loading-ring"></div>
+  <p>Opening OurHeaven…</p>
+</div>
+<div class="toast-stack" id="toastStack"></div>
 
 <!-- ===================== LOGIN SCREEN ===================== -->
 <div id="screen-login" class="auth-wrap">
@@ -873,6 +922,7 @@ document.getElementById("logoutBtn").addEventListener("click", (e) => {
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     session = null;
+    if (presenceHeartbeat) { clearInterval(presenceHeartbeat); presenceHeartbeat = null; }
     document.getElementById("screen-login").classList.remove("hidden");
     document.getElementById("app").classList.add("hidden");
     document.getElementById("password").value = "";
@@ -883,8 +933,10 @@ onAuthStateChanged(auth, async (user) => {
   session = { who };
   document.getElementById("screen-login").classList.add("hidden");
   document.getElementById("app").classList.remove("hidden");
+  document.getElementById("loadingOverlay").classList.remove("hidden");
   await ensureCoupleDoc();
   listenToEverything();
+  startPresence();
   navigate(location.hash.replace("#", "") || "dashboard");
 });
 
@@ -894,13 +946,17 @@ async function ensureCoupleDoc() {
     await setDoc(coupleRef, {
       couple: { startDate: "2023-02-14", anniversaryMonthDay: "02-14", partnerABirthday: "", partnerBBirthday: "" },
       users: {
-        a: { name: "Partner A", nickname: "Love", status: "", about: "", quote: "", badge: "" },
-        b: { name: "Partner B", nickname: "Darling", status: "", about: "", quote: "", badge: "" }
+        a: { name: "Ashriel", nickname: "Love", status: "", about: "", quote: "", badge: "" },
+        b: { name: "Watura", nickname: "Darling", status: "", about: "", quote: "", badge: "" }
       },
       preferences: { a: {}, b: {} }
     });
   }
-  onSnapshot(coupleRef, (snap) => { coupleData = snap.data(); renderCurrentPage(); });
+  onSnapshot(coupleRef, (snap) => {
+    coupleData = snap.data();
+    document.getElementById("loadingOverlay").classList.add("hidden");
+    renderCurrentPage();
+  });
 }
 
 /* ---------------- Realtime collection listeners ---------------- */
@@ -916,6 +972,16 @@ function listenToEverything() {
 }
 function mapDocs(snap) { return snap.docs.map(d => ({ id: d.id, ...d.data() })); }
 function nowMs() { return Date.now(); }
+
+/* ---------------- Toasts ---------------- */
+function showToast(message) {
+  const stack = document.getElementById("toastStack");
+  const el = document.createElement("div");
+  el.className = "toast";
+  el.textContent = message;
+  stack.appendChild(el);
+  setTimeout(() => el.remove(), 2700);
+}
 
 /* ---------------- Navigation ---------------- */
 function navigate(page) {
@@ -1022,6 +1088,7 @@ function renderProfile() {
     <div class="card">
       <div class="badge" style="margin-bottom:10px;">Their profile</div>
       <h3>${esc(theirs.nickname || theirs.name || "Partner")}</h3>
+      <div class="presence-line"><span class="presence-dot ${isOnline(presenceData[other]?.lastSeen) ? "online" : ""}"></span>${isOnline(presenceData[other]?.lastSeen) ? "Online now" : "Last seen " + relativeTime(presenceData[other]?.lastSeen)}</div>
       <p style="margin-top:6px;">${esc(theirs.status || "No status set")}</p>
       <hr class="divider"/>
       <p>${esc(theirs.about || "Nothing written yet.")}</p>
@@ -1035,8 +1102,8 @@ function renderProfile() {
         <div class="field"><label>Relationship start date</label><input id="rel_start" type="date" value="${escAttr(c.startDate)}"/></div>
         <div class="field"><label>Anniversary date</label><input id="rel_anniv" type="date" value="${escAttr(annivPreview)}"/></div>
         <div></div>
-        <div class="field"><label>Partner A's birthday</label><input id="rel_bdayA" type="date" value="${escAttr(c.partnerABirthday)}"/></div>
-        <div class="field"><label>Partner B's birthday</label><input id="rel_bdayB" type="date" value="${escAttr(c.partnerBBirthday)}"/></div>
+        <div class="field"><label>Ashriel's birthday</label><input id="rel_bdayA" type="date" value="${escAttr(c.partnerABirthday)}"/></div>
+        <div class="field"><label>Watura's birthday</label><input id="rel_bdayB" type="date" value="${escAttr(c.partnerBBirthday)}"/></div>
       </div>
       <button class="btn btn-primary" id="rel_save">Save relationship details</button>
     </div>
@@ -1052,20 +1119,66 @@ function renderProfile() {
       badge: document.getElementById("p_badge").value,
     };
     await updateDoc(coupleRef, { [`users.${who}`]: { ...mine, ...updated } });
+    showToast("Profile saved 💗");
   });
 
   document.getElementById("rel_save").addEventListener("click", async () => {
     const annivDate = document.getElementById("rel_anniv").value;
+    const newAnnivMonthDay = annivDate ? annivDate.slice(5) : (c.anniversaryMonthDay || "");
+    const newBdayA = document.getElementById("rel_bdayA").value || "";
+    const newBdayB = document.getElementById("rel_bdayB").value || "";
     await updateDoc(coupleRef, {
       "couple.startDate": document.getElementById("rel_start").value || c.startDate || "",
-      "couple.anniversaryMonthDay": annivDate ? annivDate.slice(5) : (c.anniversaryMonthDay || ""),
-      "couple.partnerABirthday": document.getElementById("rel_bdayA").value || "",
-      "couple.partnerBBirthday": document.getElementById("rel_bdayB").value || "",
+      "couple.anniversaryMonthDay": newAnnivMonthDay,
+      "couple.partnerABirthday": newBdayA,
+      "couple.partnerBBirthday": newBdayB,
     });
+    await syncAutoReminders(newAnnivMonthDay, newBdayA, newBdayB);
+    showToast("Relationship details saved ✨");
   });
 }
 function escAttr(s){ return escHtml(s).replace(/"/g,"&quot;"); }
 function escHtml(s){ return (s ?? "").toString(); }
+
+// Auto-creates/updates a reminder 7 days before the anniversary and each
+// birthday, so you don't have to remember to add those manually every year.
+// Uses fixed document IDs (setDoc + merge) so re-saving updates the same
+// reminder instead of piling up duplicates.
+async function syncAutoReminders(anniversaryMonthDay, bdayA, bdayB) {
+  const users = coupleData?.users || {};
+  const jobs = [];
+  if (anniversaryMonthDay) {
+    const target = nextAnnualDate(anniversaryMonthDay);
+    jobs.push(setDoc(doc(db, "couples", COUPLE_ID, "reminders", "auto-anniversary"), {
+      title: "Anniversary is coming up 🎉", date: reminderDateStr(target, 7), type: "Anniversary", createdAt: nowMs()
+    }, { merge: true }));
+  }
+  if (bdayA) {
+    const target = nextAnnualDate(bdayA.slice(5));
+    jobs.push(setDoc(doc(db, "couples", COUPLE_ID, "reminders", "auto-bday-a"), {
+      title: `${users.a?.name || "Ashriel"}'s birthday is coming up 🎂`, date: reminderDateStr(target, 7), type: "Birthday", createdAt: nowMs()
+    }, { merge: true }));
+  }
+  if (bdayB) {
+    const target = nextAnnualDate(bdayB.slice(5));
+    jobs.push(setDoc(doc(db, "couples", COUPLE_ID, "reminders", "auto-bday-b"), {
+      title: `${users.b?.name || "Watura"}'s birthday is coming up 🎂`, date: reminderDateStr(target, 7), type: "Birthday", createdAt: nowMs()
+    }, { merge: true }));
+  }
+  await Promise.all(jobs);
+}
+function nextAnnualDate(monthDay) {
+  const [m, d] = monthDay.split("-").map(Number);
+  const today = new Date(); today.setHours(0,0,0,0);
+  let target = new Date(today.getFullYear(), m - 1, d);
+  if (target < today) target = new Date(today.getFullYear() + 1, m - 1, d);
+  return target;
+}
+function reminderDateStr(target, daysBefore) {
+  const d = new Date(target);
+  d.setDate(d.getDate() - daysBefore);
+  return d.toISOString().slice(0, 10);
+}
 
 /* ---------------- Preferences ---------------- */
 const PREF_FIELDS = [
@@ -1094,6 +1207,7 @@ function renderPreferences() {
     const updated = { ...mine };
     document.querySelectorAll(".prefInput").forEach(inp => updated[inp.dataset.k] = inp.value);
     await updateDoc(coupleRef, { [`preferences.${who}`]: updated });
+    showToast("Preferences saved 💗");
   });
 }
 
@@ -1120,6 +1234,7 @@ document.getElementById("jAdd").addEventListener("click", async () => {
     author: session.who, createdAt: nowMs()
   });
   ["jTitle","jMood","jBody","jDate"].forEach(id => document.getElementById(id).value = "");
+  showToast("Memory added to your journal 📔");
 });
 
 /* ---------------- Questions ---------------- */
@@ -1129,8 +1244,8 @@ function renderQuestions() {
       <div class="card" style="margin-bottom:14px;">
         <h3 style="margin-bottom:12px;">${esc(q.q)}</h3>
         <div class="grid grid-2">
-          <div class="field"><label>Partner A's answer</label><textarea data-id="${q.id}" data-who="a" class="qAns" ${session.who!=='a'?'readonly':''}>${escHtml(q.a)}</textarea></div>
-          <div class="field"><label>Partner B's answer</label><textarea data-id="${q.id}" data-who="b" class="qAns" ${session.who!=='b'?'readonly':''}>${escHtml(q.b)}</textarea></div>
+          <div class="field"><label>Ashriel's answer</label><textarea data-id="${q.id}" data-who="a" class="qAns" ${session.who!=='a'?'readonly':''}>${escHtml(q.a)}</textarea></div>
+          <div class="field"><label>Watura's answer</label><textarea data-id="${q.id}" data-who="b" class="qAns" ${session.who!=='b'?'readonly':''}>${escHtml(q.b)}</textarea></div>
         </div>
         <button class="btn btn-primary btn-sm" onclick="window.__saveAnswer('${q.id}')">Save my answer</button>
       </div>`).join("")
@@ -1141,10 +1256,12 @@ document.getElementById("qAdd").addEventListener("click", async () => {
   if (!q) return;
   await addDoc(colRef("questions"), { q, a: "", b: "", createdAt: nowMs() });
   document.getElementById("qNew").value = "";
+  showToast("Question added 💬");
 });
 window.__saveAnswer = async (id) => {
   const el = document.querySelector(`.qAns[data-id="${id}"][data-who="${session.who}"]`);
   await updateDoc(doc(db, "couples", COUPLE_ID, "questions", id), { [session.who]: el.value });
+  showToast("Answer saved");
 };
 
 /* ---------------- Bucket List ---------------- */
@@ -1163,6 +1280,7 @@ document.getElementById("blAdd").addEventListener("click", async () => {
   if (!title) return;
   await addDoc(colRef("bucketList"), { title, done: false, createdAt: nowMs() });
   document.getElementById("blTitle").value = "";
+  showToast("Added to your bucket list ✅");
 });
 
 /* ---------------- Date Ideas ---------------- */
@@ -1181,6 +1299,7 @@ document.getElementById("diAdd").addEventListener("click", async () => {
   if (!title) return;
   await addDoc(colRef("dateIdeas"), { title, notes: document.getElementById("diNotes").value.trim(), done: false, createdAt: nowMs() });
   document.getElementById("diTitle").value = ""; document.getElementById("diNotes").value = "";
+  showToast("Date idea saved 🌹");
 });
 
 /* ---------------- Goals ---------------- */
@@ -1203,6 +1322,7 @@ document.getElementById("gAdd").addEventListener("click", async () => {
   if (!title) return;
   await addDoc(colRef("goals"), { title, target, progress: 0, unit: document.getElementById("gUnit").value.trim(), createdAt: nowMs() });
   document.getElementById("gTitle").value = ""; document.getElementById("gTarget").value = ""; document.getElementById("gUnit").value = "";
+  showToast("Goal added 🎯");
 });
 window.__bumpGoal = async (id, progress, target) => {
   await updateDoc(doc(db, "couples", COUPLE_ID, "goals", id), { progress: Math.min(target, progress + 1) });
@@ -1225,6 +1345,7 @@ document.getElementById("rAdd").addEventListener("click", async () => {
   if (!title || !date) return;
   await addDoc(colRef("reminders"), { title, date, type: document.getElementById("rType").value, createdAt: nowMs() });
   document.getElementById("rTitle").value = ""; document.getElementById("rDate").value = "";
+  showToast("Reminder added 🔔");
 });
 
 /* ---------------- Countdowns ---------------- */
@@ -1246,30 +1367,90 @@ document.getElementById("cAdd").addEventListener("click", async () => {
   if (!title || !date) return;
   await addDoc(colRef("countdowns"), { title, date, createdAt: nowMs() });
   document.getElementById("cTitle").value = ""; document.getElementById("cDate").value = "";
+  showToast("Countdown added ⏳");
 });
+
+/* ---------------- Presence: last seen, typing, read receipts ----------------
+   Best-effort only: Firestore (without Realtime Database) has no reliable
+   "onDisconnect" hook, so this works by having each device check in every
+   20s while the tab is open/visible. That means "last seen" can lag by up
+   to ~20s, and if a tab is force-closed (phone killed, battery died) it may
+   briefly still show as online until the next expected heartbeat passes.
+   Good enough for "is my partner around right now", not a guarantee. */
+const presenceRef = doc(db, "couples", COUPLE_ID, "meta", "presence");
+let presenceData = { a: {}, b: {} };
+let presenceHeartbeat = null;
+let typingClearTimer = null;
+let lastReadSent = 0;
+
+function startPresence() {
+  onSnapshot(presenceRef, (snap) => {
+    presenceData = snap.exists() ? (snap.data() || { a: {}, b: {} }) : { a: {}, b: {} };
+    if (currentPage === "chat" || currentPage === "profile") renderCurrentPage();
+  });
+  updatePresence({ lastSeen: nowMs() });
+  presenceHeartbeat = setInterval(() => updatePresence({ lastSeen: nowMs() }), 20000);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") updatePresence({ lastSeen: nowMs() });
+  });
+}
+async function updatePresence(patch) {
+  if (!session) return;
+  try { await setDoc(presenceRef, { [session.who]: patch }, { merge: true }); } catch (e) { /* best-effort, ignore failures */ }
+}
+function relativeTime(ms) {
+  if (!ms) return "a while ago";
+  const diff = Date.now() - ms;
+  if (diff < 45000) return "just now";
+  if (diff < 3600000) return Math.round(diff / 60000) + " min ago";
+  if (diff < 86400000) return Math.round(diff / 3600000) + " hr ago";
+  return Math.round(diff / 86400000) + " day" + (Math.round(diff / 86400000) === 1 ? "" : "s") + " ago";
+}
+function isOnline(lastSeen) { return lastSeen && (Date.now() - lastSeen) < 45000; }
 
 /* ---------------- Chat ---------------- */
 function renderChat() {
-  const who = session.who;
+  const who = session.who, other = who === "a" ? "b" : "a";
   let html = "", lastDate = "";
-  state.chat.forEach(m => {
+  state.chat.forEach((m, i) => {
     const d = new Date(m.ts);
     const dstr = d.toLocaleDateString(undefined, { month: "long", day: "numeric" });
     if (dstr !== lastDate) { html += `<div class="chat-date-sep"><span>${dstr}</span></div>`; lastDate = dstr; }
     const mine = m.from === who;
     html += `<div class="bubble-row ${mine ? "me" : "them"}"><div class="bubble">${esc(m.text)}<div class="meta">${d.toLocaleTimeString(undefined,{hour:"2-digit",minute:"2-digit"})}</div></div></div>`;
+    if (mine && i === state.chat.length - 1) {
+      const seen = (presenceData[other]?.lastRead || 0) >= m.ts;
+      html += `<div class="read-receipt">${seen ? "Seen" : "Delivered"}</div>`;
+    }
   });
+  const theirTyping = presenceData[other]?.typing && (nowMs() - (presenceData[other]?.typingAt || 0)) < 4000;
+  if (theirTyping) {
+    html += `<div class="chat-typing-row bubble-row them"><div class="bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div></div>`;
+  }
   document.getElementById("chatScroll").innerHTML = html || `<div class="empty"><div class="ic">💌</div>Say hello 👋</div>`;
   const scroll = document.getElementById("chatScroll");
   scroll.scrollTop = scroll.scrollHeight;
+
+  const lastMsgTs = state.chat.length ? state.chat[state.chat.length - 1].ts : 0;
+  if (lastMsgTs && lastMsgTs !== lastReadSent) {
+    lastReadSent = lastMsgTs;
+    updatePresence({ lastRead: lastMsgTs });
+  }
 }
 document.getElementById("chatSend").addEventListener("click", sendChat);
 document.getElementById("chatInput").addEventListener("keydown", e => { if (e.key === "Enter") sendChat(); });
+document.getElementById("chatInput").addEventListener("input", () => {
+  updatePresence({ typing: true, typingAt: nowMs() });
+  clearTimeout(typingClearTimer);
+  typingClearTimer = setTimeout(() => updatePresence({ typing: false }), 2500);
+});
 async function sendChat() {
   const input = document.getElementById("chatInput");
   const text = input.value.trim();
   if (!text) return;
   input.value = "";
+  clearTimeout(typingClearTimer);
+  updatePresence({ typing: false });
   await addDoc(colRef("chat"), { from: session.who, text, ts: nowMs() });
 }
 
